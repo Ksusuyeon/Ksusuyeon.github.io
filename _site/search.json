@@ -1,0 +1,15 @@
+[
+  
+    {
+      "title"    : "airflow 구축(with celery executor)",
+      "title-lower"    : "airflow 구축(with celery executor)",
+      "sub-titile" : "",
+      "sub-titile-lower" : "",
+      "categories" : "airflowDocker",
+      "tags"     : "",
+      "url"      : "/airflow/docker/2023/03/24/airflow-with-celery.html",
+      "date"     : "2023-03-24 00:33:36 +0900",
+      "content"     : "airflow 구축(with celery executor)version  airflow version 2.5.1  python 3.7.7  postgresql구성  master node 1  worker node 2 sssss먀arrrree구축 과정  airflow 공식 문서에서 제공하는 docker-compose.yml 파일Running Airflo..."
+    } 
+  
+]

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<link href="https://fonts.googleapis.com/css?family=Merriweather:300|Raleway:400,700" rel="stylesheet">
+<link rel="stylesheet" href="/assets/css/style.css">
+<title>airflow 구축(with celery executor)</title>
+<!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>airflow 구축(with celery executor) | susu’s blog</title>
+<meta name="generator" content="Jekyll v4.3.2" />
+<meta property="og:title" content="airflow 구축(with celery executor)" />
+<meta name="author" content="Ksusuyeon" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="susu’s blog" />
+<meta property="og:description" content="susu’s blog" />
+<link rel="canonical" href="http://localhost:4000/airflow/docker/2023/03/24/airflow-with-celery.html" />
+<meta property="og:url" content="http://localhost:4000/airflow/docker/2023/03/24/airflow-with-celery.html" />
+<meta property="og:site_name" content="susu’s blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-03-24T00:33:36+09:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="airflow 구축(with celery executor)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Ksusuyeon"},"dateModified":"2023-03-24T00:33:36+09:00","datePublished":"2023-03-24T00:33:36+09:00","description":"susu’s blog","headline":"airflow 구축(with celery executor)","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/airflow/docker/2023/03/24/airflow-with-celery.html"},"url":"http://localhost:4000/airflow/docker/2023/03/24/airflow-with-celery.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+<script type="text/javascript" src="/assets/js/darkmode.js"></script>
+
+</head><body>
+  <main class="container">
+    <section class="about">
+      <div class="about-header condensed">
+      <div class="about-title">
+      <a href="/">
+        
+        <img src="/assets/portfolio.png" alt="Suyeon Kim" />
+        
+      </a>
+      <h2 id="title">
+        <a href="/">Suyeon Kim</a>
+      </h2>
+      </div><p class="tagline">Data Engineer</p></div>
+      
+      <ul class="social about-footer condensed"><a href="https://github.com/https://github.com/ksusuyeon" target="_blank">
+          <li>
+            <i class="icon-github-circled"></i>
+          </li>
+        </a><a href="https://www.linkedin.com/in/kim-suyeon-132b881b9/" target="_blank">
+          <li>
+            <i class="icon-linkedin-squared"></i>
+          </li>
+        </a><a href="https://instagram.com/mongsom2" target="_blank">
+          <li>
+            <i class="icon-instagram"></i>
+          </li>
+        </a></ul><p class="about-footer condensed">&copy;
+        2023</p><div class="about-footer condensed">
+        <p>Dark Mode
+          <i class="icon-moon"></i>
+          <label class="switch">
+            <input type="checkbox" class="dark-mode-toggle">
+            <span class="slider round" onclick="toggleDarkMode()"></span>
+          </label>
+        </p>
+      </div>
+    </section>
+    <section class="content">
+      <div class="post-container">
+  <a class="post-link" href="/airflow/docker/2023/03/24/airflow-with-celery.html">
+    <h2 class="post-title">airflow 구축(with celery executor)</h2>
+  </a>
+  <div class="post-meta">
+    <div class="post-date"><i class="icon-calendar"></i>Mar 24, 2023</div><ul class="post-categories"><li>airflow</li><li>Docker</li></ul></div>
+  <div class="post">
+    <p><img src="/assets/posts/airflow-with-celery/0.png" alt="Untitled" class="center" /></p>
+
+<h1 id="airflow-구축with-celery-executor">airflow 구축(with celery executor)</h1>
+
+<h3 id="version">version</h3>
+
+<ul>
+  <li>airflow version 2.5.1</li>
+  <li>python 3.7.7</li>
+  <li>postgresql</li>
+</ul>
+
+<h2 id="구성">구성</h2>
+
+<ul>
+  <li>master node 1</li>
+  <li>worker node 2 sssss먀arrrree</li>
+</ul>
+
+<h1 id="구축-과정">구축 과정</h1>
+
+<ul>
+  <li>airflow 공식 문서에서 제공하는 docker-compose.yml 파일</li>
+</ul>
+
+<p><a href="https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html#">Running Airflow in Docker - Airflow Documentation</a></p>
+
+<div class="language-jsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">curl</span> <span class="o">-</span><span class="nx">LfO</span> <span class="dl">'</span><span class="s1">https://airflow.apache.org/docs/apache-airflow/2.5.1/docker-compose.yaml</span><span class="dl">'</span>
+</code></pre></div></div>
+
+<p>docker-compose up을 하기전에 실행 경로에 <code class="language-plaintext highlighter-rouge">./dags ./logs ./plugins</code> 세개의 디렉토리를 생성한다.</p>
+
+<p>만약 다른 경로에 만들고 싶다면 <code class="language-plaintext highlighter-rouge">AIRFLOW_PROJ_DIR</code> 를 수정해주면 된다.</p>
+
+<p>데이터 마이그레이션을 실행하고 첫 번째 사용자 계정을 생성하기 위해 아래와 같은 명령어를 입력한다.</p>
+
+<div class="language-jsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">docker</span> <span class="nx">compose</span> <span class="nx">up</span> <span class="nx">airflow</span><span class="o">-</span><span class="nx">init</span>
+</code></pre></div></div>
+
+<p>초기화가 끝난면  다음과 같은 메시지를 볼 수 있다.</p>
+
+<p><img src="/assets/posts/airflow-with-celery/1.png" alt="Untitled" /></p>
+
+<p>이후 <code class="language-plaintext highlighter-rouge">docker-compose up</code> 을 하면 celery executor를 airflow 환경을 확인 할 수 있다.</p>
+
+<blockquote>
+  <p>만약 docker log를 보고 싶지 않다면 <code class="language-plaintext highlighter-rouge">-d</code> 옵션을 주면 된다.</p>
+
+</blockquote>
+
+<ul>
+  <li>
+    <p>airflow webui</p>
+
+    <p><img src="/assets/posts/airflow-with-celery/2.png" alt="Untitled" /></p>
+
+    <p><img src="/assets/posts/airflow-with-celery/3.png" alt="Untitled" /></p>
+  </li>
+</ul>
+
+<p>flower를 실행하기 위해 <code class="language-plaintext highlighter-rouge">docker-compose up -d flower</code> 를 한다.</p>
+
+<ul>
+  <li>
+    <p>flower</p>
+
+    <p><img src="/assets/posts/airflow-with-celery/4.png" alt="Untitled" /></p>
+  </li>
+</ul>
+
+<p><strong>만약 뭔가 꼬여서 처음부터 다시 하고 싶다면..!</strong></p>
+
+<div class="language-jsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">docker</span><span class="o">-</span><span class="nx">compose</span> <span class="nx">down</span> <span class="o">--</span><span class="nx">volumes</span> <span class="o">--</span><span class="nx">remove</span><span class="o">-</span><span class="nx">orphans</span>
+</code></pre></div></div>
+
+<p>추가로 airflow cluster를 구성해 다른 서버에 worker를 띄우는 방법은 다음과 같다.</p>
+
+<p>먼저 fernet_key를 생성한다.</p>
+
+<p><img src="/assets/posts/airflow-with-celery/5.png" alt="Untitled" /></p>
+
+<p>그리고 이 fernet_key를 docker-compose.yml의 <code class="language-plaintext highlighter-rouge">AIRFLOW__CORE__FERNET_KEY</code> 에 넣어준다.</p>
+
+<p>그리고 docker-compose를 <code class="language-plaintext highlighter-rouge">--forece-recreate</code> 옵션을 사용해 다시 실행한다.</p>
+
+<p>다음으로 worker node용 Dockerfile을 작성한다.</p>
+
+<div class="language-jsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">FROM</span> <span class="nx">python</span><span class="p">:</span><span class="mf">3.7</span><span class="p">.</span><span class="mi">16</span><span class="o">-</span><span class="nx">slim</span>
+
+<span class="err">#</span> <span class="nx">install</span> <span class="nx">airflow</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW_HOME</span><span class="o">=</span><span class="dl">"</span><span class="s2">/root/airflow</span><span class="dl">"</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__WORKER__NAME</span><span class="o">=</span><span class="dl">"</span><span class="s2">worker_node</span><span class="dl">"</span>
+
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__MASTER__IP</span><span class="o">=</span><span class="dl">"</span><span class="s2">HOST_IP</span><span class="dl">"</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__POSTGRESQL__HOST</span><span class="o">=</span><span class="nx">$</span><span class="p">{</span><span class="nx">AIRFLOW__MASTER__IP</span><span class="p">}:</span><span class="mi">5432</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__REDIS__HOST</span><span class="o">=</span><span class="nx">$</span><span class="p">{</span><span class="nx">AIRFLOW__MASTER__IP</span><span class="p">}:</span><span class="mi">6379</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__CORE__EXECUTOR</span><span class="o">=</span><span class="dl">"</span><span class="s2">CeleryExecutor</span><span class="dl">"</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__DATABASE__SQL_ALCHEMY_CONN</span><span class="o">=</span><span class="dl">"</span><span class="s2">postgresql+psycopg2://airflow:airflow@${AIRFLOW__POSTGRESQL__HOST}/airflow</span><span class="dl">"</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__CORE__SQL_ALCHEMY_CONN</span><span class="o">=</span><span class="dl">"</span><span class="s2">postgresql+psycopg2://airflow:airflow@${AIRFLOW__POSTGRESQL__HOST}/airflow</span><span class="dl">"</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__CELERY__RESULT_BACKEND</span><span class="o">=</span><span class="dl">"</span><span class="s2">db+postgresql://airflow:airflow@${AIRFLOW__POSTGRESQL__HOST}/airflow</span><span class="dl">"</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__CELERY__BROKER_URL</span><span class="o">=</span><span class="dl">"</span><span class="s2">redis://:@${AIRFLOW__REDIS__HOST}/0</span><span class="dl">"</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__LOGGING__BASE_LOG_FOLDER</span><span class="o">=</span><span class="dl">"</span><span class="s2">${AIRFLOW_HOME}/log</span><span class="dl">"</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__SCHEDULER__CHILD_PROCESS_LOG_DIRECTORY</span><span class="o">=</span><span class="dl">"</span><span class="s2">${AIRFLOW_HOME}/log/scheduler</span><span class="dl">"</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__LOGGING__DAG_PROCESSOR_MANAGER_LOG_LOCATION</span><span class="o">=</span><span class="dl">"</span><span class="s2">${AIRFLOW_HOME}/log/dag_processor_manager/dag_processor_manager.log</span><span class="dl">"</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__CORE__HOSTNAME_CALLABLE</span><span class="o">=</span><span class="dl">"</span><span class="s2">airflow.utils.net.get_host_ip_address</span><span class="dl">"</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__CORE__FERNET_KEY</span><span class="o">=</span><span class="dl">""</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__WEBSERVER__SECRET_KEY</span><span class="o">=</span><span class="dl">""</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION</span><span class="o">=</span><span class="dl">"</span><span class="s2">true</span><span class="dl">"</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__CORE__LOAD_EXAMPLES</span><span class="o">=</span><span class="dl">"</span><span class="s2">false</span><span class="dl">"</span>
+<span class="nx">ENV</span> <span class="nx">AIRFLOW__API__AUTH_BACKENDS</span><span class="o">=</span><span class="dl">"</span><span class="s2">airflow.api.auth.backend.basic_auth</span><span class="dl">"</span>
+<span class="nx">ENV</span> <span class="nx">_pip_ADDITIONAL_REQUIREMENTS</span><span class="o">=</span><span class="dl">"</span><span class="s2">${_pip_ADDITIONAL_REQUIREMENTS:-apache-airflow-providers-google}</span><span class="dl">"</span>
+
+<span class="err">#</span> <span class="nx">pip</span> <span class="nx">update</span>
+<span class="nx">RUN</span> <span class="nx">apt</span><span class="o">-</span><span class="kd">get</span> <span class="nx">update</span> <span class="o">&amp;&amp;</span> <span class="nx">apt</span><span class="o">-</span><span class="kd">get</span> <span class="nx">install</span> <span class="o">-</span><span class="nx">y</span> <span class="nx">python3</span><span class="o">-</span><span class="nx">distutils</span> <span class="nx">python3</span><span class="o">-</span><span class="nx">setuptools</span>
+<span class="nx">RUN</span> <span class="nx">python3</span> <span class="o">-</span><span class="nx">m</span> <span class="nx">pip</span> <span class="nx">install</span> <span class="nx">pip</span> <span class="o">--</span><span class="nx">upgrade</span> <span class="nx">pip</span>
+<span class="err">#</span> <span class="nx">RUN</span> <span class="nx">apt</span><span class="o">-</span><span class="kd">get</span> <span class="nx">install</span> <span class="nx">python3</span><span class="p">.</span><span class="mi">7</span><span class="o">-</span><span class="nx">dev</span> <span class="nx">libmysqlclient</span><span class="o">-</span><span class="nx">dev</span> <span class="nx">gcc</span> <span class="o">-</span><span class="nx">y</span>
+<span class="nx">RUN</span> <span class="nx">python3</span> <span class="o">-</span><span class="nx">m</span> <span class="nx">pip</span> <span class="nx">install</span> <span class="nx">cffi</span>
+
+<span class="err">#</span> <span class="nx">install</span> <span class="nx">airflow</span>
+<span class="nx">RUN</span> <span class="nx">pip</span> <span class="nx">install</span> <span class="nx">apache</span><span class="o">-</span><span class="nx">airflow</span><span class="p">[</span><span class="nx">celery</span><span class="p">]</span><span class="o">==</span><span class="mf">2.5</span><span class="p">.</span><span class="mi">0</span>
+<span class="nx">RUN</span> <span class="nx">pip</span> <span class="nx">install</span> <span class="nx">psycopg2</span><span class="o">-</span><span class="nx">binary</span>
+<span class="nx">RUN</span> <span class="nx">pip</span> <span class="nx">install</span> <span class="nx">Redis</span>
+<span class="nx">RUN</span> <span class="nx">airflow</span> <span class="nx">db</span> <span class="nx">init</span>
+<span class="nx">RUN</span> <span class="nx">mkdir</span> <span class="o">-</span><span class="nx">p</span> <span class="p">.</span><span class="o">/</span><span class="nx">airflow</span><span class="o">/</span><span class="nx">dags</span>
+<span class="nx">RUN</span> <span class="nx">mkdir</span> <span class="p">.</span><span class="o">/</span><span class="nx">airflow</span><span class="o">/</span><span class="nx">plugins</span>
+
+<span class="err">#</span> <span class="nx">healthcheck</span>
+<span class="nx">HEALTHCHECK</span> <span class="o">--</span><span class="nx">interval</span><span class="o">=</span><span class="mi">10</span><span class="nx">s</span> <span class="o">--</span><span class="nx">timeout</span><span class="o">=</span><span class="mi">10</span><span class="nx">s</span> <span class="o">--</span><span class="nx">retries</span><span class="o">=</span><span class="mi">5</span> <span class="nx">CMD</span> <span class="nx">airflow</span> <span class="nx">jobs</span> <span class="nx">check</span> <span class="o">--</span><span class="nx">job</span><span class="o">-</span><span class="nx">type</span> <span class="nx">SchedulerJob</span> <span class="o">--</span><span class="nx">hostname</span> <span class="dl">"</span><span class="s2">$${HOSTNAME}</span><span class="dl">"</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">AIRFLOW__CORE__FERNET_KEY</code>에 앞서 발급한 fernet_key를 넣어준다.</p>
+
+<p>Dockerfile을 빌드하고 실행을 하면</p>
+
+<div class="language-jsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">docker</span> <span class="nx">build</span> <span class="p">.</span> <span class="nx">worker</span><span class="p">:</span><span class="nx">test</span>
+<span class="nx">docker</span> <span class="nx">run</span> <span class="o">-</span><span class="nx">it</span> <span class="nx">worker</span><span class="p">:</span><span class="nx">test</span> <span class="nx">airflow</span> <span class="nx">celery</span> 
+</code></pre></div></div>
+
+<p>flower에서 worker node가 하나 더 생겼음을 확인할 수 있다.</p>
+
+<p><img src="/assets/posts/airflow-with-celery/6.png" alt="Untitled" /></p>
+
+<p>worker node를 실행시키는 명령어 <code class="language-plaintext highlighter-rouge">-H</code> 와 <code class="language-plaintext highlighter-rouge">-q</code> 옵션을 통해 worker와 queue의 이름을 정할 수 있다.</p>
+
+<p><img src="/assets/posts/airflow-with-celery/7.png" alt="Untitled" /></p>
+
+<h2 id="참고-문서">참고 문서</h2>
+<p><a href="https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html">https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html</a>
+<a href="https://jaeyung1001.tistory.com/286">https://jaeyung1001.tistory.com/286</a></p>
+
+
+  </div></div>
+
+    </section>
+    <footer class="condensed">
+      <ul class="social about-footer condensed"><a href="https://github.com/https://github.com/ksusuyeon" target="_blank">
+          <li>
+            <i class="icon-github-circled"></i>
+          </li>
+        </a><a href="https://www.linkedin.com/in/kim-suyeon-132b881b9/" target="_blank">
+          <li>
+            <i class="icon-linkedin-squared"></i>
+          </li>
+        </a><a href="https://instagram.com/mongsom2" target="_blank">
+          <li>
+            <i class="icon-instagram"></i>
+          </li>
+        </a></ul><p class="about-footer condensed">&copy;
+        2023</p><div class="about-footer condensed">
+        <p>Dark Mode
+          <i class="icon-moon"></i>
+          <label class="switch">
+            <input type="checkbox" class="dark-mode-toggle">
+            <span class="slider round" onclick="toggleDarkMode()"></span>
+          </label>
+        </p>
+      </div>
+    </footer>
+  </main>
+  
+  <script type="text/javascript" src="/assets/js/darkmode.js"></script>
+  
+  <script src="/assets/js/simple-jekyll-search.min.js"></script>
+  <script src="/assets/js/search.js"></script>
+  
+</body>
+
+</html>
