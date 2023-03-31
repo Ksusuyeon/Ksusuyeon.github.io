@@ -5,7 +5,7 @@ date:   2023-03-23 21:03:36 +0530
 categories: airflow Docker
 ---
 
-![Untitled](/assets/posts/airflow-with-celery/0.png){: .center}
+![Untitled](/assets/posts/2023-03-23-airflow-with-celery/0.png){: .center}
 
 # airflow 구축(with celery executor)
 
@@ -42,7 +42,7 @@ docker compose up airflow-init
 
 초기화가 끝난면  다음과 같은 메시지를 볼 수 있다.
 
-![Untitled](/assets/posts/airflow-with-celery/1.png)
+![Untitled](/assets/posts/2023-03-23-airflow-with-celery/1.png)
 
 이후 `docker-compose up` 을 하면 celery executor를 airflow 환경을 확인 할 수 있다.
 
@@ -51,16 +51,16 @@ docker compose up airflow-init
 
 - airflow webui
     
-    ![Untitled](/assets/posts/airflow-with-celery/2.png)
+    ![Untitled](/assets/posts/2023-03-23-airflow-with-celery/2.png)
     
-    ![Untitled](/assets/posts/airflow-with-celery/3.png)
+    ![Untitled](/assets/posts/2023-03-23-airflow-with-celery/3.png)
     
 
 flower를 실행하기 위해 `docker-compose up -d flower` 를 한다.
 
 - flower
     
-    ![Untitled](/assets/posts/airflow-with-celery/4.png)
+    ![Untitled](/assets/posts/2023-03-23-airflow-with-celery/4.png)
     
 
 **만약 뭔가 꼬여서 처음부터 다시 하고 싶다면..!**
@@ -73,7 +73,7 @@ docker-compose down --volumes --remove-orphans
 
 먼저 fernet_key를 생성한다.
 
-![Untitled](/assets/posts/airflow-with-celery/5.png)
+![Untitled](/assets/posts/2023-03-23-airflow-with-celery/5.png)
 
 그리고 이 fernet_key를 docker-compose.yml의 `AIRFLOW__CORE__FERNET_KEY` 에 넣어준다.
 
@@ -136,11 +136,11 @@ docker run -it worker:test airflow celery
 
 flower에서 worker node가 하나 더 생겼음을 확인할 수 있다.
 
-![Untitled](/assets/posts/airflow-with-celery/6.png)
+![Untitled](/assets/posts/2023-03-23-airflow-with-celery/6.png)
 
 worker node를 실행시키는 명령어 `-H` 와 `-q` 옵션을 통해 worker와 queue의 이름을 정할 수 있다. 
 
-![Untitled](/assets/posts/airflow-with-celery/7.png)
+![Untitled](/assets/posts/2023-03-23-airflow-with-celery/7.png)
 
 ## 참고 문서
 <https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html>
