@@ -18,7 +18,7 @@ categories: airflow Docker
 ## 구성
 
 - master node 1
-- worker node 2 sssss먀arrrree
+- worker node 2
 
 # 구축 과정
 
