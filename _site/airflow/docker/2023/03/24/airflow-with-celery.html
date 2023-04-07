@@ -75,7 +75,7 @@
   <div class="post-meta">
     <div class="post-date"><i class="icon-calendar"></i>Mar 24, 2023</div><ul class="post-categories"><li>airflow</li><li>Docker</li></ul></div>
   <div class="post">
-    <p><img src="/assets/posts/airflow-with-celery/0.png" alt="Untitled" class="center" /></p>
+    <p><img src="/assets/posts/2023-03-23-airflow-with-celery/0.png" alt="Untitled" class="center" /></p>
 
 <h1 id="airflow-구축with-celery-executor">airflow 구축(with celery executor)</h1>
 
@@ -91,7 +91,7 @@
 
 <ul>
   <li>master node 1</li>
-  <li>worker node 2 sssss먀arrrree</li>
+  <li>worker node 2</li>
 </ul>
 
 <h1 id="구축-과정">구축 과정</h1>
@@ -116,7 +116,7 @@
 
 <p>초기화가 끝난면  다음과 같은 메시지를 볼 수 있다.</p>
 
-<p><img src="/assets/posts/airflow-with-celery/1.png" alt="Untitled" /></p>
+<p><img src="/assets/posts/2023-03-23-airflow-with-celery/1.png" alt="Untitled" /></p>
 
 <p>이후 <code class="language-plaintext highlighter-rouge">docker-compose up</code> 을 하면 celery executor를 airflow 환경을 확인 할 수 있다.</p>
 
@@ -129,9 +129,9 @@
   <li>
     <p>airflow webui</p>
 
-    <p><img src="/assets/posts/airflow-with-celery/2.png" alt="Untitled" /></p>
+    <p><img src="/assets/posts/2023-03-23-airflow-with-celery/2.png" alt="Untitled" /></p>
 
-    <p><img src="/assets/posts/airflow-with-celery/3.png" alt="Untitled" /></p>
+    <p><img src="/assets/posts/2023-03-23-airflow-with-celery/3.png" alt="Untitled" /></p>
   </li>
 </ul>
 
@@ -141,7 +141,7 @@
   <li>
     <p>flower</p>
 
-    <p><img src="/assets/posts/airflow-with-celery/4.png" alt="Untitled" /></p>
+    <p><img src="/assets/posts/2023-03-23-airflow-with-celery/4.png" alt="Untitled" /></p>
   </li>
 </ul>
 
@@ -154,7 +154,7 @@
 
 <p>먼저 fernet_key를 생성한다.</p>
 
-<p><img src="/assets/posts/airflow-with-celery/5.png" alt="Untitled" /></p>
+<p><img src="/assets/posts/2023-03-23-airflow-with-celery/5.png" alt="Untitled" /></p>
 
 <p>그리고 이 fernet_key를 docker-compose.yml의 <code class="language-plaintext highlighter-rouge">AIRFLOW__CORE__FERNET_KEY</code> 에 넣어준다.</p>
 
@@ -215,11 +215,11 @@
 
 <p>flower에서 worker node가 하나 더 생겼음을 확인할 수 있다.</p>
 
-<p><img src="/assets/posts/airflow-with-celery/6.png" alt="Untitled" /></p>
+<p><img src="/assets/posts/2023-03-23-airflow-with-celery/6.png" alt="Untitled" /></p>
 
 <p>worker node를 실행시키는 명령어 <code class="language-plaintext highlighter-rouge">-H</code> 와 <code class="language-plaintext highlighter-rouge">-q</code> 옵션을 통해 worker와 queue의 이름을 정할 수 있다.</p>
 
-<p><img src="/assets/posts/airflow-with-celery/7.png" alt="Untitled" /></p>
+<p><img src="/assets/posts/2023-03-23-airflow-with-celery/7.png" alt="Untitled" /></p>
 
 <h2 id="참고-문서">참고 문서</h2>
 <p><a href="https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html">https://airflow.apache.org/docs/apache-airflow/stable/howto/docker-compose/index.html</a>

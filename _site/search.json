@@ -1,6 +1,18 @@
 [
   
     {
+      "title"    : "Java의 정석 정리",
+      "title-lower"    : "java의 정석 정리",
+      "sub-titile" : "",
+      "sub-titile-lower" : "",
+      "categories" : "JAVABook",
+      "tags"     : "",
+      "url"      : "/java/book/2023/04/06/basic-java.html",
+      "date"     : "2023-04-06 20:33:36 +0900",
+      "content"     : "6. 객체지향 프로그래밍객체지향언어의 주요특징  코드의 재사용성이 높다  코드의 관리가 용이하다  신뢰성이 높은 프로그램을 가능하게 한다. → 제어자와 메서드, 코드의 중복 제거클래스란 객체를 정의해 놓은 것, 객체는 클래스에 정의된 내용대로 메모리에 생성된 것클래스로부터 객체를 만드는 과정을 인스턴스화(instantiate), 클래스로부터 만들어진 ..."
+    } ,
+  
+    {
       "title"    : "airflow 구축(with celery executor)",
       "title-lower"    : "airflow 구축(with celery executor)",
       "sub-titile" : "",
@@ -9,7 +21,7 @@
       "tags"     : "",
       "url"      : "/airflow/docker/2023/03/24/airflow-with-celery.html",
       "date"     : "2023-03-24 00:33:36 +0900",
-      "content"     : "airflow 구축(with celery executor)version  airflow version 2.5.1  python 3.7.7  postgresql구성  master node 1  worker node 2 sssss먀arrrree구축 과정  airflow 공식 문서에서 제공하는 docker-compose.yml 파일Running Airflo..."
+      "content"     : "airflow 구축(with celery executor)version  airflow version 2.5.1  python 3.7.7  postgresql구성  master node 1  worker node 2구축 과정  airflow 공식 문서에서 제공하는 docker-compose.yml 파일Running Airflow in Docker - ..."
     } 
   
 ]
